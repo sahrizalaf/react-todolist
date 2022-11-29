@@ -1,10 +1,20 @@
+import { useState } from "react";
 import './index.css';
 import Todo from './components/Todo';
 import Form from './components/Form';
 import FilterButton from './components/FilterButton';
+import { nanoid } from "nanoid";
 
 function App(props) {
-  const taskList = props.tasks?.map((task) => (
+
+  const [tasks, setTasks] = useState(props.tasks);
+  
+  function addTask(name){
+      const newTask = { id: `id-${nanoid()}`, name: name, completed: false};
+      setTasks([...tasks, newTask]);
+  }
+
+  const taskList = tasks.map((task) => (
     <Todo
       id={task.id}
       name={task.name}
@@ -12,17 +22,21 @@ function App(props) {
       key={task.id}
     />
   ));
+
+  const tasksNoun = taskList.length !== 1 ? 'tasks' : 'task';
+  const headingText = `${taskList.length} ${tasksNoun} remaining`;
+
   return (
     <div className="todoapp stack-large">
       <h1>ngAPPain?</h1>
-      <Form/>
+      <Form addTask={addTask}/>
       <div className="filters btn-group stack-exception">
         <FilterButton type="All"/>
         <FilterButton type="Todo"/>
         <FilterButton type="Completed"/>
       </div>
       <h2 id="list-heading">
-        3 tasks remaining
+        {headingText}
       </h2>
       <ul
         role="list"
